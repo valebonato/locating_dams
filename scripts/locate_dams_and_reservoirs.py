@@ -47,6 +47,10 @@ rel_dif_catchment_area = pcr.abs(aha_catchment_area_km2 - dam_ids_pcrglobwb_catc
 # loop through all dams (from the largest to the smallest), if rel_dif_catchment_area > threshold, we have to reposition it
 threshold = 0.1
 number_of_dams = 132
+
+# for testing
+number_of_dams = 10
+
 for dam_id in range(1, number_of_dams + 1):
     
     print(dam_id)
