@@ -28,13 +28,13 @@ catchment_area_km2 = pcr.catchmenttotal(cell_area, ldd_map) / (1000.*1000.)
 
 # convert table/column to a pcraster map of dam ids
 cmd = "col2map " + clone_map_file + "-M -x 4 -y 3 -v 1 " + column_input_file + "dam_ids.map" 
-print(cmd): os.system(cmd)
+print(cmd); os.system(cmd)
 # - read dam ids as a variable
 dam_ids = pcr.readmap("dam_ids.map") 
 
 # convert table/column to a pcraster map of catchment areas based on AHA
 cmd = "col2map " + clone_map_file + "-M -x 4 -y 3 -v 2 " + column_input_file + "aha_catchment_area_km2.map"
-print(cmd): os.system(cmd)
+print(cmd); os.system(cmd)
 # - read aha_catchment_area_km2 as a variable
 aha_catchment_area_km2 = pcr.readmap("aha_catchment_area_km2.map") 
 
