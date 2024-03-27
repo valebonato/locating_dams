@@ -27,7 +27,7 @@ cell_area = pcr.readmap(cell_area_file)
 catchment_area_km2 = pcr.catchmenttotal(cell_area, ldd_map) / (1000.*1000.)
 
 # convert table/column to a pcraster map of dam ids
-cmd = "col2map " + clone_map_file + "-M -x 4 -y 3 -v 1 " + column_input_file + "dam_ids.map" 
+cmd = "col2map " + clone_map_file + " -M -x 4 -y 3 -v 1 " + column_input_file + "dam_ids.map" 
 print(cmd); os.system(cmd)
 # - read dam ids as a variable
 dam_ids = pcr.readmap("dam_ids.map") 
