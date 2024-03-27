@@ -13,7 +13,7 @@ column_input_file = "../aha_hydropowers/existing_reservoirs_v2024-03-26_no-heade
 
 # set the clone (your map grid system and extent)
 clone_map_file = "/scratch-shared/edwin/valentina/ldd/lddsound_05min_version_20210330.map"
-pcr.setclone(ldd_map_file)
+pcr.setclone(clone_map_file)
 
 # ldd map (river network)
 ldd_map_file = "/scratch-shared/edwin/valentina/ldd/lddsound_05min_version_20210330.map"
