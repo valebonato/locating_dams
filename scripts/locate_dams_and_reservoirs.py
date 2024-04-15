@@ -9,7 +9,7 @@ import pcraster as pcr
 import virtualOS as vos
 
 # table/column input file - this should be sorted based on reservoir capacities (the largest the lower ids)
-column_input_file = "../aha_hydropowers/existing_reservoirs_v2024-03-26_no-headers.csv"
+column_input_file = "../aha_hydropowers/existing_reservoirs_v2024-04-10_selected_no-headers.csv"
 
 # set the clone (your map grid system and extent)
 clone_map_file = "/scratch-shared/edwin/valentina/ldd/lddsound_05min_version_20210330.map"
@@ -46,10 +46,10 @@ rel_dif_catchment_area = pcr.abs(aha_catchment_area_km2 - dam_ids_pcrglobwb_catc
 
 # loop through all dams (from the largest to the smallest), if rel_dif_catchment_area > threshold, we have to reposition it
 threshold = 0.1
-number_of_dams = 132
+number_of_dams = 131
 
-# for testing
-number_of_dams = 10
+# ~ # for testing
+# ~ number_of_dams = 10
 
 for dam_id in range(1, number_of_dams + 1):
     
@@ -69,8 +69,9 @@ for dam_id in range(1, number_of_dams + 1):
         
     else:
     
-        # expanding the point to 3 x 3 window size of 5 arcmin
-        search_window = pcr.windowmajority(this_dam_point, 5./60. * 3.)
+        # expanding the point to its neighbours
+        search_window = pcr.windowmajority(this_dam_point, 5./60. * 2.)
+        # - note using the window_length = 2 to avoid 'too large' window size
         
         # get the pcrglobwb catchment area within this search_window
         catchment_area_within_search_window = pcr.ifthen(pcr.defined(search_window), catchment_area_km2)
@@ -83,6 +84,20 @@ for dam_id in range(1, number_of_dams + 1):
         difference_catch_area = pcr.abs(catchment_area_within_search_window - aha_catchment_area_km2_this_dam)
         
         location_corrected_dam_id = pcr.ifthen(difference_catch_area == pcr.mapminimum(difference_catch_area), pcr.nominal(dam_id))
+        
+        # check whether there are more than one pixel in location_corrected_dam_id; if this is the case, we just find the closest one to the original coordinates 
+        # - calculate latitude distance
+        lat_aha_coordinate = read_from_aha_table
+        lat_distance = pcr.ycoordinate(pcr.defined(location_corrected_dam_id)) - lat_aha_coordinate
+        
+        distance = ???
+        
+        # TODO: Continue from this one!!!
+        
+        
+        area_order = pcr.areaorder(distance, location_corrected_dam_id)
+        location_corrected_dam_id = pcr.ifthen(area_order == 1, pcr.nominal(dam_id))
+        
         
     if dam_id == 1:    
         all_location_corrected_dam_ids = location_corrected_dam_id
