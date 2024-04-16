@@ -93,7 +93,7 @@ for dam_id in range(1, number_of_dams + 1):
     else:
     
         # expanding the point to its neighbours
-        search_window = pcr.windowmajority(this_dam_point, 5./60. * 2.)
+        search_window = pcr.windowmajority(this_dam_point, 5./60. * 3.)
         # - note using the window_length = 2 to avoid 'too large' window size
         
         # get the pcrglobwb catchment area within this search_window
@@ -101,7 +101,7 @@ for dam_id in range(1, number_of_dams + 1):
         
         # compare the above to aha catchment_area
         aha_catchment_area_km2_this_dam = pcr.ifthen(this_dam_point, aha_catchment_area_km2)
-        aha_catchment_area_km2_this_dam = pcr.windowmaximum(aha_catchment_area_km2_this_dam, 5./60 * 2.)
+        aha_catchment_area_km2_this_dam = pcr.windowmaximum(aha_catchment_area_km2_this_dam, 5./60 * 3.)
 
         # calculate the absolute difference
         difference_catch_area = pcr.abs(catchment_area_within_search_window - aha_catchment_area_km2_this_dam)
