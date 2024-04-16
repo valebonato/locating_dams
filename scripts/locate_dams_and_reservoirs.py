@@ -12,15 +12,15 @@ import virtualOS as vos
 column_input_file = "../aha_hydropowers/existing_reservoirs_v2024-04-10_selected_no-headers.csv"
 
 # set the clone (your map grid system and extent)
-clone_map_file = "/scratch-shared/edwin/valentina/ldd/lddsound_05min_version_20210330.map"
+clone_map_file = "../pcrglobwb_maps/lddsound_05min_version_20210330.map"
 pcr.setclone(clone_map_file)
 
 # ldd map (river network)
-ldd_map_file = "/scratch-shared/edwin/valentina/ldd/lddsound_05min_version_20210330.map"
+ldd_map_file = "../pcrglobwb_maps/lddsound_05min_version_20210330.map"
 ldd_map = pcr.readmap(ldd_map_file)
 
 # cell area
-cell_area_file = "../aha_hydropowers/cdo_gridarea_clone_global_05min_correct_lats.nc.map"
+cell_area_file = "../pcrglobwb_maps/cdo_gridarea_clone_global_05min_correct_lats.nc.map"
 cell_area = pcr.readmap(cell_area_file)
 
 # calculate catchment area (in km2) based on pcrglobwb ldd
@@ -38,6 +38,18 @@ print(cmd); os.system(cmd)
 # - read aha_catchment_area_km2 as a variable
 aha_catchment_area_km2 = pcr.readmap("aha_catchment_area_km2.map") 
 
+# convert table/column to a pcraster map of the latitude coordinates based on AHA
+cmd = "col2map --clone " + clone_map_file + " -M -x 4 -y 3 -v 3 -S -s ';' " + column_input_file + " aha_latitudes.map"
+print(cmd); os.system(cmd)
+# - read as a variable
+aha_latitudes = pcr.readmap("aha_latitudes.map") 
+
+# convert table/column to a pcraster map of the latitude coordinates based on AHA
+cmd = "col2map --clone " + clone_map_file + " -M -x 4 -y 3 -v 4 -S -s ';' " + column_input_file + " aha_longitudes.map"
+print(cmd); os.system(cmd)
+# - read as a variable
+aha_longitudes = pcr.readmap("aha_longitudes.map") 
+
 # get the pcrglobwb catchment area for every dam id
 dam_ids_pcrglobwb_catchment_area_km2 = pcr.ifthen(pcr.defined(dam_ids), catchment_area_km2)
 
@@ -50,6 +62,12 @@ number_of_dams = 131
 
 # ~ # for testing
 # ~ number_of_dams = 10
+
+
+def get_distances_to_a_reference_latlon_coodinate_in_meter(lon_pcrmap, lat_pcrmap, lon_ref, lat_ref):
+    pcr_distance_map = pcr.acos(pcr.sin(lat_pcrmap)*pcr.sin(lat_ref) + pcr.cos(lat_pcrmap)*pcr.cos(lat_ref)*pcr.cos(lon_ref-lon_pcrmap))*6371000 
+    return pcr_distance_map
+
 
 for dam_id in range(1, number_of_dams + 1):
     
@@ -85,19 +103,21 @@ for dam_id in range(1, number_of_dams + 1):
         
         location_corrected_dam_id = pcr.ifthen(difference_catch_area == pcr.mapminimum(difference_catch_area), pcr.nominal(dam_id))
         
-        # check whether there are more than one pixel in location_corrected_dam_id; if this is the case, we just find the closest one to the original coordinates 
-        # - calculate latitude distance
-        lat_aha_coordinate = read_from_aha_table
-        lat_distance = pcr.ycoordinate(pcr.defined(location_corrected_dam_id)) - lat_aha_coordinate
+
+        # make sure that there is only one pixel in location_corrected_dam_id; if this is NOT the case, we just find the closest one to the original coordinates 
+
+        # - get the latitude and longitude coordinates based on AHA, and transfer them to single values maps (using mapmaximum)
+        lat_aha_coordinate = pcr.mapmaximum(pcr.ifthen(dam_ids == dam_id, aha_latitudes))
+        lon_aha_coordinate = pcr.mapmaximum(pcr.ifthen(dam_ids == dam_id, aha_longitudes))
         
-        distance = ???
-        
-        # TODO: Continue from this one!!!
-        
-        
-        area_order = pcr.areaorder(distance, location_corrected_dam_id)
+        # - calculate the distance of every candidate point to the AHA coordinate
+        distance_map = get_distances_to_a_reference_latlon_coodinate_in_meter(lon_pcrmap = pcr.xcoordinate(pcr.defined(location_corrected_dam_id)),\
+                                                                              lat_pcrmap = pcr.ycoordinate(pcr.defined(location_corrected_dam_id)),\
+                                                                              lon_ref = lon_aha_coordinate,\
+                                                                              lat_ref = lat_aha_coordinate)
+        area_order = pcr.areaorder(distance_map, location_corrected_dam_id)
+        # - choose the one with shortest distance (order/rank = 1)
         location_corrected_dam_id = pcr.ifthen(area_order == 1, pcr.nominal(dam_id))
-        
         
     if dam_id == 1:    
         all_location_corrected_dam_ids = location_corrected_dam_id
