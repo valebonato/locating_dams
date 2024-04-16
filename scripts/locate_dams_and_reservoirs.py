@@ -109,20 +109,20 @@ for dam_id in range(1, number_of_dams + 1):
         location_corrected_dam_id = pcr.ifthen(difference_catch_area == pcr.mapminimum(difference_catch_area), pcr.nominal(dam_id))
         
 
-        # make sure that there is only one pixel in location_corrected_dam_id; if this is NOT the case, we just find the closest one to the original coordinates 
+        # ~ # make sure that there is only one pixel in location_corrected_dam_id; if this is NOT the case, we just find the closest one to the original coordinates 
 
-        # - get the latitude and longitude coordinates based on AHA, and transfer them to single values maps (using mapmaximum)
-        lat_aha_coordinate = pcr.mapmaximum(pcr.ifthen(dam_ids == dam_id, aha_latitudes))
-        lon_aha_coordinate = pcr.mapmaximum(pcr.ifthen(dam_ids == dam_id, aha_longitudes))
+        # ~ # - get the latitude and longitude coordinates based on AHA, and transfer them to single values maps (using mapmaximum)
+        # ~ lat_aha_coordinate = pcr.mapmaximum(pcr.ifthen(dam_ids == dam_id, aha_latitudes))
+        # ~ lon_aha_coordinate = pcr.mapmaximum(pcr.ifthen(dam_ids == dam_id, aha_longitudes))
         
-        # - calculate the distance of every candidate point to the AHA coordinate
-        distance_map = get_distances_to_a_reference_latlon_coodinate_in_meter(lon_pcrmap = pcr.xcoordinate(pcr.defined(location_corrected_dam_id)),\
-                                                                              lat_pcrmap = pcr.ycoordinate(pcr.defined(location_corrected_dam_id)),\
-                                                                              lon_ref = lon_aha_coordinate,\
-                                                                              lat_ref = lat_aha_coordinate)
-        area_order = pcr.areaorder(distance_map, location_corrected_dam_id)
-        # - choose the one with shortest distance (order/rank = 1)
-        location_corrected_dam_id = pcr.ifthen(area_order == 1, pcr.nominal(dam_id))
+        # ~ # - calculate the distance of every candidate point to the AHA coordinate
+        # ~ distance_map = get_distances_to_a_reference_latlon_coodinate_in_meter(lon_pcrmap = pcr.xcoordinate(pcr.defined(location_corrected_dam_id)),\
+                                                                              # ~ lat_pcrmap = pcr.ycoordinate(pcr.defined(location_corrected_dam_id)),\
+                                                                              # ~ lon_ref = lon_aha_coordinate,\
+                                                                              # ~ lat_ref = lat_aha_coordinate)
+        # ~ area_order = pcr.areaorder(distance_map, location_corrected_dam_id)
+        # ~ # - choose the one with shortest distance (order/rank = 1)
+        # ~ location_corrected_dam_id = pcr.ifthen(area_order == 1, pcr.nominal(dam_id))
         
     if dam_id == 1:    
         all_location_corrected_dam_ids = location_corrected_dam_id
