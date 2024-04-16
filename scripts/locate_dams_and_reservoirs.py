@@ -93,7 +93,7 @@ for dam_id in range(1, number_of_dams + 1):
     else:
     
         # expanding the point to its neighbours
-        search_window = pcr.windowmajority(this_dam_point, 5./60. * 3.)
+        search_window = pcr.windowmajority(this_dam_point, 5./60. * 2.)
         # - note using the window_length = 2 to avoid 'too large' window size
         
         # get the pcrglobwb catchment area within this search_window
