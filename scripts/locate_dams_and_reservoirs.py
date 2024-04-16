@@ -11,8 +11,8 @@ import virtualOS as vos
 # table/column input file - this should be sorted based on reservoir capacities (the largest the lower ids)
 column_input_file = "../aha_hydropowers/existing_reservoirs_v2024-04-10_selected_no-headers.csv"
 
-# - for testing with 74 and 85 (multiple pixel problem)
-column_input_file = "../aha_hydropowers/existing_reservoirs_v2024-04-10_selected_no-headers-test74and85.csv"
+# ~ # - for testing with 74 and 85 (multiple pixel problem)
+# ~ column_input_file = "../aha_hydropowers/existing_reservoirs_v2024-04-10_selected_no-headers-test74and85.csv"
 
 
 # set the clone (your map grid system and extent)
@@ -64,9 +64,9 @@ rel_dif_catchment_area = pcr.abs(aha_catchment_area_km2 - dam_ids_pcrglobwb_catc
 threshold = 0.1
 number_of_dams = 131
 
-# for testing
-number_of_dams = 10
-number_of_dams = 2
+# ~ # for testing
+# ~ number_of_dams = 10
+# ~ number_of_dams = 2
 
 
 def get_distances_to_a_reference_latlon_coodinate_in_meter(lon_pcrmap, lat_pcrmap, lon_ref, lat_ref):
