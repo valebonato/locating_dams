@@ -65,7 +65,7 @@ number_of_dams = 131
 
 
 def get_distances_to_a_reference_latlon_coodinate_in_meter(lon_pcrmap, lat_pcrmap, lon_ref, lat_ref):
-    pcr_distance_map = pcr.acos(pcr.sin(lat_pcrmap)*pcr.sin(lat_ref) + pcr.cos(lat_pcrmap)*pcr.cos(lat_ref)*pcr.cos(lon_ref - lon_pcrmap))*6371000. 
+    pcr_distance_map = pcr.scalar(pcr.acos(pcr.sin(lat_pcrmap)*pcr.sin(lat_ref) + pcr.cos(lat_pcrmap)*pcr.cos(lat_ref)*pcr.cos(lon_ref - lon_pcrmap)))/360.*6371000. 
     return pcr_distance_map
 
 
